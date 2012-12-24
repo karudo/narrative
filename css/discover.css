@@ -1,0 +1,155 @@
+/*когда включать версию для айфона*/
+/*когда включать широкую версию*/
+/* TRANSITION */
+@media all and (max-width: 1020px) {
+  /* line 3, ../sass/discover.scss */
+  .discover {
+    overflow: hidden;
+  }
+}
+/* line 5, ../sass/discover.scss */
+.search-block {
+  padding-top: 43px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 1px 0 0 #f1f1f1;
+  margin-bottom: 20px;
+}
+/* line 10, ../sass/discover.scss */
+.search-block .search-form {
+  width: 510px;
+  margin: 0 auto;
+  border: 0;
+  padding: 15px 0 13px;
+}
+/* line 15, ../sass/discover.scss */
+.search-block .search-form .search-form__input {
+  width: 477px;
+}
+/* line 16, ../sass/discover.scss */
+.search-block .search-form .search-form__btn {
+  top: 15px;
+  right: 0;
+}
+
+/* line 23, ../sass/discover.scss */
+.discover {
+  margin: 0 auto -23px;
+  width: 1000px;
+}
+
+/* line 27, ../sass/discover.scss */
+.l {
+  display: inline-block;
+  width: 1020px;
+  margin: 0 -10px;
+}
+
+/* line 32, ../sass/discover.scss */
+.post_small {
+  padding-top: 0;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 320px;
+  margin: 0 10px 20px;
+  float: left;
+}
+/* line 41, ../sass/discover.scss */
+.post_small .post__content {
+  width: auto;
+  padding: 0 30px;
+  margin: 0 0 24px;
+}
+/* line 45, ../sass/discover.scss */
+.post_small .post__content h1 {
+  font-size: 24px;
+  margin-bottom: 7px;
+}
+/* line 49, ../sass/discover.scss */
+.post_small .post__content p {
+  font-size: 16px;
+}
+/* line 50, ../sass/discover.scss */
+.post_small .post__content .figure_wide {
+  margin: 0 -25px;
+}
+/* line 54, ../sass/discover.scss */
+.post_small figure img {
+  vertical-align: top;
+}
+/* line 57, ../sass/discover.scss */
+.post_small .figure_first {
+  margin: 0 0 18px;
+}
+/* line 60, ../sass/discover.scss */
+.post_small .author {
+  width: auto;
+  padding: 9px 10px 0;
+  margin-bottom: 7px;
+  border: none;
+}
+/* line 65, ../sass/discover.scss */
+.post_small .author .author__pic {
+  height: 46px;
+  width: 46px;
+}
+/* line 70, ../sass/discover.scss */
+.post_small .author_left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 74, ../sass/discover.scss */
+.post_small .author_left .author__pic {
+  border-color: rgba(0, 0, 0, 0.15);
+  background-clip: padding-box;
+}
+/* line 79, ../sass/discover.scss */
+.post_small .post__bottom {
+  margin-top: 0;
+  height: 40px;
+}
+/* line 82, ../sass/discover.scss */
+.post_small .post__bottom .post__comment {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px 0 15px;
+}
+/* line 87, ../sass/discover.scss */
+.post_small .post__bottom .post__likes, .post_small .post__bottom .post__share {
+  height: 32px;
+  line-height: 32px;
+  padding: 4px 14px 4px 11px;
+}
+/* line 92, ../sass/discover.scss */
+.post_small .post__bottom .post__likes .post__likesicon {
+  margin-right: 5px;
+}
+/* line 94, ../sass/discover.scss */
+.post_small .post__bottom .post__likes .post__likesicon:hover {
+  margin-right: 1px;
+}
+/* line 97, ../sass/discover.scss */
+.post_small .post__shareicon {
+  margin-right: 4px;
+}
+/* line 98, ../sass/discover.scss */
+.post_small .post__share {
+  border-right: 0;
+}
+/* line 99, ../sass/discover.scss */
+.post_small .post__userlist {
+  overflow: hidden;
+  border-top: 1px solid #dfdfdf;
+  padding: 11px 0 8px 15px;
+  background: #f8f8f8;
+}
+/* line 105, ../sass/discover.scss */
+.post_small .post__userpic {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  float: left;
+  margin-right: 8px;
+}

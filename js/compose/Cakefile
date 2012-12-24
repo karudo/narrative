@@ -1,0 +1,117 @@
+muffin = require 'muffin'
+glob = require 'glob'
+async = require 'async'
+_ = require 'underscore'
+fs = require 'fs'
+coffee = require 'coffee-script'
+path = require 'path'
+
+scriptsDepends =
+  'controllers/dragimage': ['utils']
+  'controllers/editor': ['utils']
+  'controllers/figureslider': ['utils', 'controllers/figure']
+  'controllers/figure11image': ['controllers/figure']
+  'controllers/figure12image': ['controllers/figure']
+  'controllers/figure31image': ['controllers/figure']
+  'controllers/figuresingleimage': ['controllers/figure']
+
+filePatterns = ['./app/*/*.coffee', './app/*.coffee']
+
+compileCoffeeFile = (src, cb)->
+  fs.readFile src, 'utf8', (err, code)->
+    unless err
+      try
+        js = coffee.compile code,
+          filename: src
+          bare: no
+        cb null, js
+      catch e
+        console.log e
+        cb e
+    else cb err
+
+getExportsCode = (src, name)-> "module.exports=null;#{src}am['#{name}']=module.exports;\n"
+
+compileExportsCallback = (f, cb)->
+  compileCoffeeFile f.file, (err, src)->
+    if err
+      cb err
+    else
+      cb no, getExportsCode(src, f.name)
+
+
+compileExports2 = (mainCb)->
+  sourcesIds = ['spine']
+
+  addSourceDepends = (name)->
+    addSourceDepends dep for dep in scriptsDepends[name] when sourcesIds.indexOf(dep) < 0 if scriptsDepends[name]
+    sourcesIds.push name if sourcesIds.indexOf(name) < 0
+
+  sourcesCompileFuncs = spine: (cb)->
+    compileExportsCallback {file: './spine/Spine.coffee', name: 'spine'}, (err, src)->
+      if err then cb err else cb no, src
+
+  async.map filePatterns, ((patt, cb)-> glob patt, {}, (_h, files)-> cb no, files), (err, files)->
+    files = _.flatten files
+    for f in files
+      name = path.relative './app', f
+      [name] = name.split '.coffee'
+      name = name.toLowerCase().replace path.sep, '/'
+      sa = file: f, name: name
+      sourcesCompileFuncs[name] = do(sa)->
+        (cb)-> compileExportsCallback sa, (err, src)-> if err then cb err else cb no, src
+      addSourceDepends name
+
+    async.parallel sourcesCompileFuncs, (err, results)->
+      if err then mainCb err
+      else
+        str = ';(function(){var module={},am=App.modules;'
+        console.log sourcesIds
+        str += results[si] for si in sourcesIds
+        str += '}).call(this);'
+        mainCb no, str
+
+
+compileExports = (mainCb)->
+  sources = [{file: './spine/Spine.coffee', name: 'spine'}]
+  #sources = spine: './spine/Spine.coffee'
+  async.map filePatterns, ((patt, cb)-> glob patt, {}, (_h, files)-> cb no, files), (err, files)->
+    files = _.flatten files
+    for f in files
+      name = path.relative './app', f
+      [name] = name.split '.coffee'
+      name = name.toLowerCase().replace path.sep, '/'
+      sources.push file: f, name: name
+    async.map sources, compileExportsCallback, (err, codes)->
+      if err then mainCb err
+      else
+        str = ';(function(){var module={},am=App.modules;'
+        str += c for c in codes
+        str += '}).call(this);'
+        mainCb no, str
+
+
+
+compileAll = ->
+  funcs = [
+    (cb)-> compileCoffeeFile './before.coffee', (err, src)-> if err then cb err else cb no, src
+    compileExports2
+    (cb)-> compileCoffeeFile './after.coffee', (err, src)-> if err then cb err else cb no, src
+  ]
+  async.series funcs, (err, sources)->
+    unless err
+      muffin.writeFile './compose.js', sources.join ''
+      #muffin.minifyScript './compose.js'
+      console.log "new ./compose.js writed " + (new Date())
+
+
+option '-w', '--watch', 'continue to watch the files and rebuild them when they change'
+
+task 'build', 'compile muffin', (options) ->
+  console.log options
+  muffin.run
+    files: _.flatten [filePatterns, './before.coffee', './after.coffee']
+    options: options
+    map:
+      '.coffee': (matches) -> #console.log "find: #{matches.input}"
+    after: -> do compileAll

@@ -1,0 +1,19 @@
+/*когда включать версию для айфона*/
+/*когда включать широкую версию*/
+/* TRANSITION */
+/* default layout */
+/* line 4, ../sass/layouts.scss */
+.l {
+  width: 100%;
+  display: inline-block;
+}
+/* line 8, ../sass/layouts.scss */
+.l .l-col1 {
+  float: left;
+  width: 140px;
+}
+/* line 13, ../sass/layouts.scss */
+.l .l-col2 {
+  float: right;
+  width: 820px;
+}
