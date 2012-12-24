@@ -1,0 +1,45 @@
+.dragover {
+    background-color: #00c1c0;
+}
+
+.image-upload {
+    overflow: hidden;
+}
+
+.image-upload .image-upload__icon {
+    cursor: pointer;
+}
+
+.image-upload .imageDrag {
+    width: 1000px;
+    height: 129px;
+    position: relative;
+
+    /*border: 1px solid #000000;*/
+}
+.image-upload .imageDrag.edit {
+    cursor: move;
+}
+.image-upload .topOfImage {
+    top: 0;
+    left: 0;
+    width: 1000px;
+    height: 129px;
+    position: absolute;
+    /*cursor: move;*/
+}
+.image-upload .image-upload_file {
+    display: none;
+}
+/*.image-upload .img {
+    position: relative;
+    cursor: move;
+}*/
+
+.wyswyg a {
+    display: block;
+}
+
+.outline_none {
+    outline: none;
+}
