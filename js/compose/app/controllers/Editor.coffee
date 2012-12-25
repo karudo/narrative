@@ -40,15 +40,32 @@ editorOnChange = (event)-> @onChange event
 class Editor extends Spine.Controller
   events:
     #blur: editorOnChange
-    keyup: editorOnChange
-    paste: editorOnChange
-    click: editorOnChange
+    'keyup .compose__text': editorOnChange
+    'paste .compose__text': editorOnChange
+    'click .compose__text': editorOnChange
+
+  elements:
+    '.compose__text': 'text'
+    '.compose__pretextin': 'pretext'
+    '.compose__titlein': 'title'
 
   constructor: ->
     super
     @figures = {}
     @panel.bind 'execCommand', (args...)=> @execCommand args...
     @panel.bind 'insertFigure', (figureName)=> @insertFigure forFiguresBind[figureName]
+    @initPlaceholder @text
+    @initPlaceholder @pretext
+    @initPlaceholder @title
+
+  initPlaceholder: ($elem)->
+    $elem.html $elem.data 'placeholder'
+    $elem.on 'focus', ->
+      if not $elem.data 'changed' then $elem.html('')
+    $elem.on 'blur', -> $elem.html $elem.data 'placeholder' if not $elem.data 'changed'
+    $elem.on 'paste keyup', -> $elem.data 'changed', yes
+
+
 
   execCommand: (cmd, params)->
     @restoreCursorPositon()

@@ -1338,9 +1338,15 @@ module.exports=null;(function() {
     __extends(Editor, _super);
 
     Editor.prototype.events = {
-      keyup: editorOnChange,
-      paste: editorOnChange,
-      click: editorOnChange
+      'keyup .compose__text': editorOnChange,
+      'paste .compose__text': editorOnChange,
+      'click .compose__text': editorOnChange
+    };
+
+    Editor.prototype.elements = {
+      '.compose__text': 'text',
+      '.compose__pretextin': 'pretext',
+      '.compose__titlein': 'title'
     };
 
     function Editor() {
@@ -1355,7 +1361,27 @@ module.exports=null;(function() {
       this.panel.bind('insertFigure', function(figureName) {
         return _this.insertFigure(forFiguresBind[figureName]);
       });
+      this.initPlaceholder(this.text);
+      this.initPlaceholder(this.pretext);
+      this.initPlaceholder(this.title);
     }
+
+    Editor.prototype.initPlaceholder = function($elem) {
+      $elem.html($elem.data('placeholder'));
+      $elem.on('focus', function() {
+        if (!$elem.data('changed')) {
+          return $elem.html('');
+        }
+      });
+      $elem.on('blur', function() {
+        if (!$elem.data('changed')) {
+          return $elem.html($elem.data('placeholder'));
+        }
+      });
+      return $elem.on('paste keyup', function() {
+        return $elem.data('changed', true);
+      });
+    };
 
     Editor.prototype.execCommand = function(cmd, params) {
       var command, h2Div, h2DivId;
@@ -2037,7 +2063,7 @@ am['controllers/uislider']=module.exports;
       });
     });
     return editor = new Editor({
-      el: $('.compose__text'),
+      el: $('.post__content'),
       panel: panel
     });
   });
