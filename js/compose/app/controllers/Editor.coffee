@@ -61,7 +61,8 @@ class Editor extends Spine.Controller
   initPlaceholder: ($elem)->
     $elem.html $elem.data 'placeholder'
     $elem.on 'focus', ->
-      if not $elem.data 'changed' then $elem.html('')
+      if not $elem.data 'changed'
+        $elem.html(' ')
     $elem.on 'blur', -> $elem.html $elem.data 'placeholder' if not $elem.data 'changed'
     $elem.on 'paste keyup', -> $elem.data 'changed', yes
 

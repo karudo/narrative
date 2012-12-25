@@ -1370,7 +1370,7 @@ module.exports=null;(function() {
       $elem.html($elem.data('placeholder'));
       $elem.on('focus', function() {
         if (!$elem.data('changed')) {
-          return $elem.html('');
+          return $elem.html(' ');
         }
       });
       $elem.on('blur', function() {
