@@ -59,7 +59,6 @@ class FigureSlider extends Figure
           @slides.prepend (@$ "##{slideId}")
 
         prevSlideId = slideId
-        yes
 
 
       @builder.hide()

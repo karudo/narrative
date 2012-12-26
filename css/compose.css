@@ -43,3 +43,7 @@
 .outline_none {
     outline: none;
 }
+
+.compose__text {
+    min-height: 600px;
+}
