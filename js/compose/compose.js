@@ -1547,14 +1547,9 @@ module.exports=null;(function() {
       switch (cmd) {
         case 'h2':
           h2DivId = uniqueId('h2_compose__pretext');
-          h2Div = document.createElement('div');
+          h2Div = document.createElement('h2');
           h2Div.id = h2DivId;
-          h2Div.className = 'compose__pretext';
-          this.range.surroundContents(h2Div);
-          return (this.$('#' + h2DivId)).css({
-            width: '640px',
-            margin: 'auto'
-          });
+          return this.range.surroundContents(h2Div);
         case 'link':
           return document.execCommand('createLink', false, params);
         default:

@@ -73,11 +73,11 @@ class Editor extends Spine.Controller
     switch cmd
       when 'h2'
         h2DivId = uniqueId 'h2_compose__pretext'
-        h2Div = document.createElement 'div'
+        h2Div = document.createElement 'h2'
         h2Div.id = h2DivId
-        h2Div.className = 'compose__pretext'
+        #h2Div.className = 'compose__pretext'
         @range.surroundContents h2Div
-        (@$ '#'+h2DivId).css width: '640px', margin: 'auto'
+        #(@$ '#'+h2DivId).css width: '640px', margin: 'auto'
       when 'link'
         document.execCommand 'createLink', no, params
       else

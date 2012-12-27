@@ -99,7 +99,7 @@ compileExports = (mainCb)->
 
 
 
-compileAll = ->
+compileAll = (options)->
   funcs = [
     (cb)-> compileCoffeeFile './before.coffee', (err, src)-> if err then cb err else cb no, src
     compileExports2
@@ -108,7 +108,7 @@ compileAll = ->
   async.series funcs, (err, sources)->
     unless err
       muffin.writeFile './compose.js', sources.join ''
-      #muffin.minifyScript './compose.js'
+      muffin.minifyScript './compose.js' if options.watch
       console.log "new ./compose.js writed " + (new Date())
 
 
@@ -121,4 +121,4 @@ task 'build', 'compile muffin', (options) ->
     options: options
     map:
       '.coffee': (matches) -> #console.log "find: #{matches.input}"
-    after: -> do compileAll
+    after: -> compileAll options

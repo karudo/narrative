@@ -8,6 +8,11 @@
   -webkit-text-size-adjust: none;
 }
 
+/* line 6, ../sass/common.scss */
+input:focus, textarea:focus {
+  outline: none;
+}
+
 /* line 7, ../sass/common.scss */
 body {
   font-family: Helvetica, arial, sans-serif;
