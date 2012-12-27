@@ -12,7 +12,7 @@ class FigureSingeImage extends Figure
         <div class="image-upload image-container" style="height:456px; width:640px;"></div>
       </div>"""
     DragImage = require 'controllers/DragImage'
-    cdi = @dragImages[1] = new DragImage el: @$('.image-upload'), noManage: no
+    cdi = @dragImages[1] = new DragImage el: @$('.image-upload')
     cdi.bind 'imageUpdated', (ob)=> @$('.image-upload').css height: ob.height+'px'
 
     

@@ -13,9 +13,9 @@ class Figure31Image extends Figure
           <div class="image-upload image-container image-upload-3" style="height:550px; width:333px;"></div>
           </div>"""
     DragImage = require 'controllers/DragImage'
-    @dragImages[1] = new DragImage el: @$('.image-upload-1'), noManage: no
-    @dragImages[2] = new DragImage el: @$('.image-upload-2'), noManage: no
-    @dragImages[3] = new DragImage el: @$('.image-upload-3'), noManage: no
+    @dragImages[1] = new DragImage el: @$('.image-upload-1')
+    @dragImages[2] = new DragImage el: @$('.image-upload-2')
+    @dragImages[3] = new DragImage el: @$('.image-upload-3')
 
     
 module.exports = Figure31Image

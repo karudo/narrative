@@ -91,6 +91,7 @@ class Editor extends Spine.Controller
     @range.insertNode node
     Obj = require options.controller
     @figures[figureId] = new Obj el: @$ '#'+figureId
+    @text.data 'changed', yes
 
   onChange: (event)->
     if $(event.srcElement).parents('.no-edit').length < 1
@@ -98,10 +99,10 @@ class Editor extends Spine.Controller
       @range = selection.getRangeAt 0
 
   restoreCursorPositon: ->
-    @el.focus()
+    @text.focus()
     unless @range
       @range = document.createRange()
-      @range.selectNodeContents @el.get 0
+      @range.selectNodeContents @text.get 0
       @range.collapse no
     selection = window.getSelection()
     selection.removeAllRanges()

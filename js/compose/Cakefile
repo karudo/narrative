@@ -41,7 +41,10 @@ compileExportsCallback = (f, cb)->
 
 
 compileExports2 = (mainCb)->
-  sourcesIds = ['spine', 'spine/manager']
+  sourcesIds = [
+    'spine'
+    #'spine/manager'
+  ]
 
   addSourceDepends = (name)->
     addSourceDepends dep for dep in scriptsDepends[name] when sourcesIds.indexOf(dep) < 0 if scriptsDepends[name]
@@ -51,9 +54,9 @@ compileExports2 = (mainCb)->
     spine: (cb)->
       compileExportsCallback {file: './spine/spine.coffee', name: 'spine'}, (err, src)->
         if err then cb err else cb no, src
-    'spine/manager':  (cb)->
-      compileExportsCallback {file: './spine/manager.coffee', name: 'spine/manager'}, (err, src)->
-        if err then cb err else cb no, src
+    #'spine/manager':  (cb)->
+    #  compileExportsCallback {file: './spine/manager.coffee', name: 'spine/manager'}, (err, src)->
+    #    if err then cb err else cb no, src
 
   async.map filePatterns, ((patt, cb)-> glob patt, {}, (_h, files)-> cb no, files), (err, files)->
     files = _.flatten files

@@ -80,6 +80,7 @@ class FigureSlider extends Figure
 
   setSliderEdit: (edit)->
     edit = !!edit
+    @canAddNewSlide = !edit
     @setDragImagesEditMode edit
     if edit
       @nextButton.hide()
@@ -100,7 +101,7 @@ class FigureSlider extends Figure
       @append blockSource
 
 
-  addSlide: (image, dragImageOptions = {})->
+  addSlide: (image)->
     slideId = uniqueId 'slide'
     $sliderSource = $ """<div class="slider__slide" id="#{slideId}">
                      <div class="image-upload" style="width: 1000px; height: 456px;"></div>
@@ -112,12 +113,13 @@ class FigureSlider extends Figure
     $imageUpload = $sliderSource.find '.image-upload'
     #console.log $imageUpload
 
-    dragImageOptions.el = $imageUpload
     DragImage = require 'controllers/DragImage'
-    cdi = @dragImages[slideId] = new DragImage dragImageOptions
-    cdi.readImageFile image if image
+    cdi = @dragImages[slideId] = new DragImage el: $imageUpload, useManage: no
     #cdi.bind 'editmode', (editmode)=> @canAddNewSlide = !editmode
-    cdi.bind 'imageUpdated', (ob)=> @addSlide() if ob.fisrtUpload
+    if image
+      cdi.readImageFile image
+    else
+      cdi.bind 'imageUpdated', (ob)=> @addSlide() if ob.fisrtUpload
     cdi.bind 'save', => @setSliderEdit no
     cdi.bind 'cancel', => @setSliderEdit no
 
@@ -163,7 +165,8 @@ class FigureSlider extends Figure
   drop: (event)->
     return unless @canAddNewSlide
     event.preventDefault()
-    @addSlide event.originalEvent.dataTransfer?.files[0]
+    @addSlide im for im in event.originalEvent.dataTransfer.files if event.originalEvent.dataTransfer
+    yes
 
     
 module.exports = FigureSlider

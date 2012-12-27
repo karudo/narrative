@@ -12,7 +12,7 @@ class DragImage extends Spine.Controller
 
   fisrtUpload: yes
 
-  noManage: yes
+  useManage: yes
 
   elements:
     'img': 'image'
@@ -219,7 +219,7 @@ class DragImage extends Spine.Controller
     @savedImageTop = pos.top
     @savedImageLeft = pos.left
     @setEditMode no
-    if @noManage then @removeManagBlock() else @createManagEditBlock()
+    unless @useManage then @removeManagBlock() else @createManagEditBlock()
     @trigger 'save'
 
 
@@ -229,7 +229,7 @@ class DragImage extends Spine.Controller
       @dragdiv.css
         left: @savedImageLeft
         top: @savedImageTop
-      if @noManage then @removeManagBlock() else @createManagEditBlock()
+      unless @useManage then @removeManagBlock() else @createManagEditBlock()
     else
       @makeEmpty()
     @setEditMode no
