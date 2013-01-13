@@ -76,3 +76,4 @@ css/profile.css
 img/common-s0650aef3c5.png
 /.idea
 /js/compose/node_modules
+/js/compose/compose.min.js
