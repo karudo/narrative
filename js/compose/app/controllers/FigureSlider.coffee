@@ -165,7 +165,7 @@ class FigureSlider extends Figure
   drop: (event)->
     return unless @canAddNewSlide
     event.preventDefault()
-    @addSlide im for im in event.originalEvent.dataTransfer.files if event.originalEvent.dataTransfer
+    (@addSlide im for im in event.originalEvent.dataTransfer.files) if event.originalEvent.dataTransfer
     yes
 
     

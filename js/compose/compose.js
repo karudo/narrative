@@ -2044,17 +2044,24 @@ am['controllers/uislider']=module.exports;
   $(function() {
     var editor, panel, topimage,
       _this = this;
-    panel = new Panel({
-      el: $('.wyswyg')
-    });
     topimage = new DragImage({
-      el: $('.top-image'),
-      noManage: false
+      el: $('.top-image')
     });
     topimage.bind('imageUpdated', function(ob) {
-      return $('.top-image').css({
-        height: ob.height + 'px'
-      });
+      var h;
+      if (ob.width < topimage.el.width()) {
+        alert("Ширина мала");
+        topimage.makeEmpty();
+      } else {
+        h = ob.height > 500 ? 500 : ob.height;
+        $('.top-image').css({
+          height: h + 'px'
+        });
+      }
+      return false;
+    });
+    panel = new Panel({
+      el: $('.wyswyg')
     });
     return editor = new Editor({
       el: $('.post__content'),

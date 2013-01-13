@@ -4,7 +4,6 @@ class Figure31Image extends Figure
   constructor: ->
     super
 
-
   init: ->
     @el.addClass('figure_many figure_wide no-edit').attr 'contenteditable', 'false'
     @html """<div class="image-border">
