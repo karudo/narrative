@@ -2,6 +2,8 @@ Figure = require 'controllers/Figure'
 
 {uniqueId} = require 'utils'
 
+template = require 'templates'
+
 class FigureSlider extends Figure
 
   canAddNewSlide: no
@@ -20,33 +22,7 @@ class FigureSlider extends Figure
   events:
     'drop .slider__slides': 'drop'
     'click .manag-block-figure .image-move': -> @setSliderEdit yes
-    'click .manag-block-figure .image-order': ->
-      @content.hide()
-
-      #console.log @getDragImagesSrc()
-      @builderList.empty()
-      #for slideId, ob of @dragImages when ob.imageSrc then do(slideId, imgSrc = ob.imageSrc)=>
-      for slide in @slides.find('.slider__slide') then do(slide)=>
-        $obSlide = $ slide
-        slideId = $obSlide.attr 'id'
-        ob = @dragImages[slideId]
-        imgSrc = ob.imageSrc
-        return unless imgSrc
-        blId = uniqueId 'li-image-m'
-        @builderList.append """<div class="image-m li" style="width: 116px; height: 83px;" id="#{blId}" data-slide-id="#{slideId}">
-          <div></div>
-          <span>&nbsp;</span>
-          </div>"""
-        img = new Image()
-        img.src = imgSrc
-        @$("##{blId} div").html img
-        @$("##{blId} div img").css width: '116px', height: '83px'
-
-      @builder.show()
-      @builderList.sortable()
-      @$('.slider-builder .image-border').append @createManagBlock().html """<div class="image-manag image-cancel">Cancel</div>
-                               <div class="image-manag image-save">Save</div>"""
-      @refreshElements()
+    'click .manag-block-figure .image-order': 'orderItems'
 
     'click .slider-builder .image-save': ->
       prevSlideId = null
@@ -59,7 +35,6 @@ class FigureSlider extends Figure
           @slides.prepend (@$ "##{slideId}")
 
         prevSlideId = slideId
-
 
       @builder.hide()
       @content.show()
@@ -89,28 +64,18 @@ class FigureSlider extends Figure
     else
       @nextButton.show()
       @prevButton.show()
-      blockSource = @createManagBlock().html """<div class="image-manag">
-                                             <div><span class="image-remove"></span></div>
-                                             <div><span class="image-order"></span></div>
-                                             <div><span class="image-move"></span></div>
-                                             </div>
-                                             <div class="image-manag">
-                                             <div><span class="image-size-m"></span></div>
-                                             <div><span class="image-size-l"></span></div>
-                                             </div>"""
+      blockSource = @createManagBlock().html template('figureslider_mangblock')
       @append blockSource
 
 
   addSlide: (image)->
     slideId = uniqueId 'slide'
-    $sliderSource = $ """<div class="slider__slide" id="#{slideId}">
-                     <div class="image-upload" style="width: 1000px; height: 456px;"></div>
-                     </div>"""
+    $slideSource = $(template('figureslider_slidesource', {slideId}))
     #sliderSource.css "height", @slides.height()+'px'
 
-    @slides.append $sliderSource
+    @slides.append $slideSource
 
-    $imageUpload = $sliderSource.find '.image-upload'
+    $imageUpload = $slideSource.find '.image-upload'
     #console.log $imageUpload
 
     DragImage = require 'controllers/DragImage'
@@ -145,19 +110,9 @@ class FigureSlider extends Figure
 
   init: ->
     @el.addClass('slider slider_wide no-edit').attr 'contenteditable', 'false'
-    @html """<div class="slider-content">
-      <div class="slider__next"><span></span></div>
-      <div class="slider__prev"><span></span></div>
-      <div class="slider__slides"></div>
-      <div class="slider__info"></div>
-      <div class="slider__descr"></div>
-      </div>
-
-      <div class="slider-builder">
-      <div class="image-border"><div class="ul"></div></div>
-      </div>"""
+    @html template('figureslider')
     @builder.hide()
-    @slides.css height: '456px'
+    @slides.css height: '460px'
     @addSlide()
     @setSliderEdit no
 
@@ -167,6 +122,30 @@ class FigureSlider extends Figure
     event.preventDefault()
     (@addSlide im for im in event.originalEvent.dataTransfer.files) if event.originalEvent.dataTransfer
     yes
+
+  orderItems: ->
+    @content.hide()
+
+    #console.log @getDragImagesSrc()
+    @builderList.empty()
+    #for slideId, ob of @dragImages when ob.imageSrc then do(slideId, imgSrc = ob.imageSrc)=>
+    for slide in @slides.find('.slider__slide') then do(slide)=>
+      $obSlide = $ slide
+      slideId = $obSlide.attr 'id'
+      ob = @dragImages[slideId]
+      imgSrc = ob.imageSrc
+      return unless imgSrc
+      blId = uniqueId 'li-image-m'
+      @builderList.append template('figureslider_order_item', {blId, slideId})
+      img = new Image()
+      img.src = imgSrc
+      @$("##{blId} div").html img
+      @$("##{blId} div img").css width: '116px', height: '83px'
+
+    @builder.show()
+    @builderList.sortable()
+    @$('.slider-builder .image-border').append @createManagBlock().html template('figureslider_order_managblock')
+    @refreshElements()
 
     
 module.exports = FigureSlider

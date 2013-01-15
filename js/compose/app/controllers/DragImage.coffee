@@ -1,4 +1,5 @@
 {doSeveralTimes} = require 'utils'
+template = require 'templates'
 
 class DragImage extends Spine.Controller
 
@@ -76,11 +77,7 @@ class DragImage extends Spine.Controller
     @savedImageTop = 0
     @savedImageLeft = 0
     @removeManagBlock()
-    @html """<div class="image-upload__in">
-      <div class="image-upload__icon"></div>
-      <input type="file" class="image-upload_file" accept="image/*">
-      <div class="image-upload__text">Click or drug’n’drop to upload header image</div>
-      </div>"""
+    @html template('di_emptyblock')
     @editMode = yes
     @hasImage = no
 
@@ -139,9 +136,7 @@ class DragImage extends Spine.Controller
 
 
   createManagSliderBlock: ->
-    blockSource = @createManagBlock().html """<div class="image-manag"></div>
-      <div class="image-manag image-cancel">Cancel</div>
-      <div class="image-manag image-save">Save</div>"""
+    blockSource = @createManagBlock().html template('di_sliderblock')
     UISlider = require 'controllers/UISlider'
     @slider = new UISlider el: blockSource.find('.image-manag').first()
     @slider.bind 'value', (value)=>
@@ -153,10 +148,7 @@ class DragImage extends Spine.Controller
 
 
   createManagEditBlock: ->
-    blockSource = @createManagBlock().html """<div class="image-manag">
-        <div><span class="image-remove"></span></div>
-        <div><span class="image-move"></span></div>
-      </div>"""
+    blockSource = @createManagBlock().html template('di_editblock')
     @append blockSource
 
 

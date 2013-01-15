@@ -39,24 +39,25 @@ compileExportsCallback = (f, cb)->
     else
       cb no, getExportsCode(src, f.name)
 
+arStaticExports = [
+  {file: './spine/spine.coffee', name: 'spine'}
+  #{file: './spine/manager.coffee', name: 'spine/manager'}
+  {file: './templates.coffee', name: 'templates'}
+]
 
 compileExports2 = (mainCb)->
-  sourcesIds = [
-    'spine'
-    #'spine/manager'
-  ]
+  sourcesIds = []
+  sourcesCompileFuncs = {}
+
+  for exp in arStaticExports
+    sourcesIds.push exp.name
+    sourcesCompileFuncs[exp.name] = do (exp)-> (cb)->
+      compileExportsCallback exp, (err, src)->
+        if err then cb err else cb no, src
 
   addSourceDepends = (name)->
     addSourceDepends dep for dep in scriptsDepends[name] when sourcesIds.indexOf(dep) < 0 if scriptsDepends[name]
     sourcesIds.push name if sourcesIds.indexOf(name) < 0
-
-  sourcesCompileFuncs =
-    spine: (cb)->
-      compileExportsCallback {file: './spine/spine.coffee', name: 'spine'}, (err, src)->
-        if err then cb err else cb no, src
-    #'spine/manager':  (cb)->
-    #  compileExportsCallback {file: './spine/manager.coffee', name: 'spine/manager'}, (err, src)->
-    #    if err then cb err else cb no, src
 
   async.map filePatterns, ((patt, cb)-> glob patt, {}, (_h, files)-> cb no, files), (err, files)->
     files = _.flatten files
@@ -78,11 +79,12 @@ compileExports2 = (mainCb)->
         str += '}).call(this);'
         mainCb no, str
 
-
+###
 compileExports = (mainCb)->
   sources = [
     {file: './spine/spine.coffee', name: 'spine'}
-    {file: './spine/manager.coffee', name: 'spine/manager'}
+    #{file: './spine/manager.coffee', name: 'spine/manager'}
+    {file: './templates.coffee', name: 'templates'}
   ]
   #sources = spine: './spine/Spine.coffee'
   async.map filePatterns, ((patt, cb)-> glob patt, {}, (_h, files)-> cb no, files), (err, files)->
@@ -99,19 +101,19 @@ compileExports = (mainCb)->
         str += c for c in codes
         str += '}).call(this);'
         mainCb no, str
-
-
+###
 
 compileAll = (options)->
   funcs = [
     (cb)-> compileCoffeeFile './before.coffee', (err, src)-> if err then cb err else cb no, src
+    #(cb)-> compileCoffeeFile './templates.coffee', (err, src)-> if err then cb err else cb no, src
     compileExports2
     (cb)-> compileCoffeeFile './after.coffee', (err, src)-> if err then cb err else cb no, src
   ]
   async.series funcs, (err, sources)->
     unless err
       muffin.writeFile './compose.js', sources.join ''
-      muffin.minifyScript './compose.js' if options.watch
+      #muffin.minifyScript './compose.js' unless options.watch
       console.log "new ./compose.js writed " + (new Date())
 
 

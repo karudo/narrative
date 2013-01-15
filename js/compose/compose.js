@@ -923,6 +923,50 @@
 }).call(this);
 am['spine']=module.exports;
 module.exports=null;(function() {
+  var tpl;
+
+  tpl = {};
+
+  tpl['di_emptyblock'] = "<div class=\"image-upload__in\">\n<div class=\"image-upload__icon\"></div>\n<input type=\"file\" class=\"image-upload_file\" accept=\"image/*\">\n<div class=\"image-upload__text\">Click or drug’n’drop to upload header image</div>\n</div>";
+
+  tpl['di_sliderblock'] = "<div class=\"image-manag\"></div>\n<div class=\"image-manag image-cancel\">Cancel</div>\n<div class=\"image-manag image-save\">Save</div>";
+
+  tpl['di_editblock'] = "<div class=\"image-manag\">\n<div><span class=\"image-remove\"></span></div>\n<div><span class=\"image-move\"></span></div>\n</div>";
+
+  tpl['figure11'] = "<div class=\"image-border\">\n<div class=\"image-upload image-container image-upload-1\" style=\"height:550px; width:500px;\"></div>\n<div class=\"image-upload image-container image-upload-2\" style=\"height:550px; width:500px;\"></div>\n</div>";
+
+  tpl['figure12'] = "<div class=\"image-border\">\n<div class=\"image-upload image-container image-upload-1\" style=\"height:500px; width:500px;\"></div>\n<div class=\"image-container\">\n<div class=\"image-upload image-container image-upload-2\" style=\"height:250px; width:500px;\"></div>\n</div>\n<div class=\"image-container\">\n<div class=\"image-upload image-container image-upload-3\" style=\"height:250px; width:500px;\"></div>\n</div>\n</div>";
+
+  tpl['figure31'] = "<div class=\"image-border\">\n<div class=\"image-upload image-container image-upload-1\" style=\"height:550px; width:334px;\"></div>\n<div class=\"image-upload image-container image-upload-2\" style=\"height:550px; width:333px;\"></div>\n<div class=\"image-upload image-container image-upload-3\" style=\"height:550px; width:333px;\"></div>\n</div>";
+
+  tpl['figuresingle'] = "<div class=\"image-border\">\n<div class=\"image-upload image-container\" style=\"height:456px; width:640px;\"></div>\n</div>";
+
+  tpl['figureslider'] = "<div class=\"slider-content\">\n<div class=\"slider__next\"><span></span></div>\n<div class=\"slider__prev\"><span></span></div>\n<div class=\"slider__slides\"></div>\n<div class=\"slider__info\"></div>\n<div class=\"slider__descr\"></div>\n</div>\n\n<div class=\"slider-builder\">\n<div class=\"image-border\"><div class=\"ul\"></div></div>\n</div>";
+
+  tpl['figureslider_mangblock'] = "<div class=\"image-manag\">\n<div><span class=\"image-remove\"></span></div>\n<div><span class=\"image-order\"></span></div>\n<div><span class=\"image-move\"></span></div>\n</div>\n<div class=\"image-manag\">\n<div><span class=\"image-size-m\"></span></div>\n<div><span class=\"image-size-l\"></span></div>\n</div>";
+
+  tpl['figureslider_slidesource'] = "<div class=\"slider__slide\" id=\"#slideId#\">\n<div class=\"image-upload\" style=\"width: 1000px; height: 456px;\"></div>\n</div>";
+
+  tpl['figureslider_order_item'] = "<div class=\"image-m li\" style=\"width: 116px; height: 83px;\" id=\"#blId#\" data-slide-id=\"#slideId#\">\n<div></div>\n<span>&nbsp;</span>\n</div>";
+
+  tpl['figureslider_order_managblock'] = "<div class=\"image-manag image-cancel\">Cancel</div>\n<div class=\"image-manag image-save\">Save</div>";
+
+  module.exports = function(name, vars) {
+    var k, t, v;
+    if (vars == null) {
+      vars = {};
+    }
+    t = tpl[name];
+    for (k in vars) {
+      v = vars[k];
+      t = t.replace("#" + k + "#", v);
+    }
+    return t;
+  };
+
+}).call(this);
+am['templates']=module.exports;
+module.exports=null;(function() {
   var utils;
 
   utils = {
@@ -964,11 +1008,13 @@ module.exports=null;(function() {
 }).call(this);
 am['utils']=module.exports;
 module.exports=null;(function() {
-  var DragImage, doSeveralTimes,
+  var DragImage, doSeveralTimes, template,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   doSeveralTimes = require('utils').doSeveralTimes;
+
+  template = require('templates');
 
   DragImage = (function(_super) {
 
@@ -1056,7 +1102,7 @@ module.exports=null;(function() {
       this.savedImageTop = 0;
       this.savedImageLeft = 0;
       this.removeManagBlock();
-      this.html("<div class=\"image-upload__in\">\n<div class=\"image-upload__icon\"></div>\n<input type=\"file\" class=\"image-upload_file\" accept=\"image/*\">\n<div class=\"image-upload__text\">Click or drug’n’drop to upload header image</div>\n</div>");
+      this.html(template('di_emptyblock'));
       this.editMode = true;
       return this.hasImage = false;
     };
@@ -1132,7 +1178,7 @@ module.exports=null;(function() {
     DragImage.prototype.createManagSliderBlock = function() {
       var UISlider, blockSource,
         _this = this;
-      blockSource = this.createManagBlock().html("<div class=\"image-manag\"></div>\n<div class=\"image-manag image-cancel\">Cancel</div>\n<div class=\"image-manag image-save\">Save</div>");
+      blockSource = this.createManagBlock().html(template('di_sliderblock'));
       UISlider = require('controllers/UISlider');
       this.slider = new UISlider({
         el: blockSource.find('.image-manag').first()
@@ -1155,7 +1201,7 @@ module.exports=null;(function() {
 
     DragImage.prototype.createManagEditBlock = function() {
       var blockSource;
-      blockSource = this.createManagBlock().html("<div class=\"image-manag\">\n  <div><span class=\"image-remove\"></span></div>\n  <div><span class=\"image-move\"></span></div>\n</div>");
+      blockSource = this.createManagBlock().html(template('di_editblock'));
       return this.append(blockSource);
     };
 
@@ -1527,7 +1573,7 @@ module.exports=null;(function() {
     Figure11Image.prototype.init = function() {
       var DragImage;
       this.el.addClass('figure_many figure_wide no-edit').attr('contenteditable', 'false');
-      this.html("<div class=\"image-border\">\n    <div class=\"image-upload image-container image-upload-1\" style=\"height:550px; width:500px;\"></div>\n    <div class=\"image-upload image-container image-upload-2\" style=\"height:550px; width:500px;\"></div>\n</div>");
+      this.html(require('templates')('figure11'));
       DragImage = require('controllers/DragImage');
       this.dragImages[1] = new DragImage({
         el: this.$('.image-upload-1')
@@ -1563,7 +1609,7 @@ module.exports=null;(function() {
     Figure12Image.prototype.init = function() {
       var DragImage;
       this.el.addClass('figure_many figure_wide no-edit').attr('contenteditable', 'false');
-      this.html("<div class=\"image-border\">\n<div class=\"image-upload image-container image-upload-1\" style=\"height:500px; width:500px;\"></div>\n<div class=\"image-container\">\n  <div class=\"image-upload image-container image-upload-2\" style=\"height:250px; width:500px;\"></div>\n</div>\n<div class=\"image-container\">\n  <div class=\"image-upload image-container image-upload-3\" style=\"height:250px; width:500px;\"></div>\n</div>\n</div>");
+      this.html(require('templates')('figure12'));
       DragImage = require('controllers/DragImage');
       this.dragImages[1] = new DragImage({
         el: this.$('.image-upload-1')
@@ -1602,7 +1648,7 @@ module.exports=null;(function() {
     Figure31Image.prototype.init = function() {
       var DragImage;
       this.el.addClass('figure_many figure_wide no-edit').attr('contenteditable', 'false');
-      this.html("<div class=\"image-border\">\n<div class=\"image-upload image-container image-upload-1\" style=\"height:550px; width:334px;\"></div>\n<div class=\"image-upload image-container image-upload-2\" style=\"height:550px; width:333px;\"></div>\n<div class=\"image-upload image-container image-upload-3\" style=\"height:550px; width:333px;\"></div>\n</div>");
+      this.html(require('templates')('figure31'));
       DragImage = require('controllers/DragImage');
       this.dragImages[1] = new DragImage({
         el: this.$('.image-upload-1')
@@ -1636,14 +1682,13 @@ module.exports=null;(function() {
 
     function FigureSingeImage() {
       FigureSingeImage.__super__.constructor.apply(this, arguments);
-      console.log(this);
     }
 
     FigureSingeImage.prototype.init = function() {
       var DragImage, cdi,
         _this = this;
       this.el.addClass('no-edit').attr('contenteditable', 'false');
-      this.html("<div class=\"image-border\">\n  <div class=\"image-upload image-container\" style=\"height:456px; width:640px;\"></div>\n</div>");
+      this.html(require('templates')('figuresingle'));
       DragImage = require('controllers/DragImage');
       cdi = this.dragImages[1] = new DragImage({
         el: this.$('.image-upload')
@@ -1664,13 +1709,15 @@ module.exports=null;(function() {
 }).call(this);
 am['controllers/figuresingleimage']=module.exports;
 module.exports=null;(function() {
-  var Figure, FigureSlider, uniqueId,
+  var Figure, FigureSlider, template, uniqueId,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   Figure = require('controllers/Figure');
 
   uniqueId = require('utils').uniqueId;
+
+  template = require('templates');
 
   FigureSlider = (function(_super) {
 
@@ -1694,40 +1741,7 @@ module.exports=null;(function() {
       'click .manag-block-figure .image-move': function() {
         return this.setSliderEdit(true);
       },
-      'click .manag-block-figure .image-order': function() {
-        var slide, _fn, _i, _len, _ref,
-          _this = this;
-        this.content.hide();
-        this.builderList.empty();
-        _ref = this.slides.find('.slider__slide');
-        _fn = function(slide) {
-          var $obSlide, blId, img, imgSrc, ob, slideId;
-          $obSlide = $(slide);
-          slideId = $obSlide.attr('id');
-          ob = _this.dragImages[slideId];
-          imgSrc = ob.imageSrc;
-          if (!imgSrc) {
-            return;
-          }
-          blId = uniqueId('li-image-m');
-          _this.builderList.append("<div class=\"image-m li\" style=\"width: 116px; height: 83px;\" id=\"" + blId + "\" data-slide-id=\"" + slideId + "\">\n<div></div>\n<span>&nbsp;</span>\n</div>");
-          img = new Image();
-          img.src = imgSrc;
-          _this.$("#" + blId + " div").html(img);
-          return _this.$("#" + blId + " div img").css({
-            width: '116px',
-            height: '83px'
-          });
-        };
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          slide = _ref[_i];
-          _fn(slide);
-        }
-        this.builder.show();
-        this.builderList.sortable();
-        this.$('.slider-builder .image-border').append(this.createManagBlock().html("<div class=\"image-manag image-cancel\">Cancel</div>\n<div class=\"image-manag image-save\">Save</div>"));
-        return this.refreshElements();
-      },
+      'click .manag-block-figure .image-order': 'orderItems',
       'click .slider-builder .image-save': function() {
         var elem, idx, prevSlideId, slideId, _i, _len, _ref;
         prevSlideId = null;
@@ -1773,18 +1787,20 @@ module.exports=null;(function() {
       } else {
         this.nextButton.show();
         this.prevButton.show();
-        blockSource = this.createManagBlock().html("<div class=\"image-manag\">\n<div><span class=\"image-remove\"></span></div>\n<div><span class=\"image-order\"></span></div>\n<div><span class=\"image-move\"></span></div>\n</div>\n<div class=\"image-manag\">\n<div><span class=\"image-size-m\"></span></div>\n<div><span class=\"image-size-l\"></span></div>\n</div>");
+        blockSource = this.createManagBlock().html(template('figureslider_mangblock'));
         return this.append(blockSource);
       }
     };
 
     FigureSlider.prototype.addSlide = function(image) {
-      var $imageUpload, $sliderSource, DragImage, cdi, slideId,
+      var $imageUpload, $slideSource, DragImage, cdi, slideId,
         _this = this;
       slideId = uniqueId('slide');
-      $sliderSource = $("<div class=\"slider__slide\" id=\"" + slideId + "\">\n<div class=\"image-upload\" style=\"width: 1000px; height: 456px;\"></div>\n</div>");
-      this.slides.append($sliderSource);
-      $imageUpload = $sliderSource.find('.image-upload');
+      $slideSource = $(template('figureslider_slidesource', {
+        slideId: slideId
+      }));
+      this.slides.append($slideSource);
+      $imageUpload = $slideSource.find('.image-upload');
       DragImage = require('controllers/DragImage');
       cdi = this.dragImages[slideId] = new DragImage({
         el: $imageUpload,
@@ -1830,10 +1846,10 @@ module.exports=null;(function() {
 
     FigureSlider.prototype.init = function() {
       this.el.addClass('slider slider_wide no-edit').attr('contenteditable', 'false');
-      this.html("<div class=\"slider-content\">\n<div class=\"slider__next\"><span></span></div>\n<div class=\"slider__prev\"><span></span></div>\n<div class=\"slider__slides\"></div>\n<div class=\"slider__info\"></div>\n<div class=\"slider__descr\"></div>\n</div>\n\n<div class=\"slider-builder\">\n<div class=\"image-border\"><div class=\"ul\"></div></div>\n</div>");
+      this.html(template('figureslider'));
       this.builder.hide();
       this.slides.css({
-        height: '456px'
+        height: '460px'
       });
       this.addSlide();
       return this.setSliderEdit(false);
@@ -1853,6 +1869,44 @@ module.exports=null;(function() {
         }
       }
       return true;
+    };
+
+    FigureSlider.prototype.orderItems = function() {
+      var slide, _fn, _i, _len, _ref,
+        _this = this;
+      this.content.hide();
+      this.builderList.empty();
+      _ref = this.slides.find('.slider__slide');
+      _fn = function(slide) {
+        var $obSlide, blId, img, imgSrc, ob, slideId;
+        $obSlide = $(slide);
+        slideId = $obSlide.attr('id');
+        ob = _this.dragImages[slideId];
+        imgSrc = ob.imageSrc;
+        if (!imgSrc) {
+          return;
+        }
+        blId = uniqueId('li-image-m');
+        _this.builderList.append(template('figureslider_order_item', {
+          blId: blId,
+          slideId: slideId
+        }));
+        img = new Image();
+        img.src = imgSrc;
+        _this.$("#" + blId + " div").html(img);
+        return _this.$("#" + blId + " div img").css({
+          width: '116px',
+          height: '83px'
+        });
+      };
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        slide = _ref[_i];
+        _fn(slide);
+      }
+      this.builder.show();
+      this.builderList.sortable();
+      this.$('.slider-builder .image-border').append(this.createManagBlock().html(template('figureslider_order_managblock')));
+      return this.refreshElements();
     };
 
     return FigureSlider;
