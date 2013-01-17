@@ -58,13 +58,17 @@ tpl['figureslider_mangblock'] = """<div class="image-manag">
                                 <div><span class="image-move"></span></div>
                                 </div>
                                 <div class="image-manag">
-                                <div><span class="image-size-m"></span></div>
-                                <div><span class="image-size-l"></span></div>
+                                <div class="set-medium"><span class="image-size-m"></span></div>
+                                <div class="set-large"><span class="image-size-l"></span></div>
                                 </div>"""
 
 tpl['figureslider_slidesource'] = """<div class="slider__slide" id="#slideId#">
                                   <div class="image-upload" style="width: 1000px; height: 456px;"></div>
                                   </div>"""
+
+tpl['figureslider_slidesource_small'] = """<div class="slider__slide" id="#slideId#"><div class="image-container">
+                                  <div class="image-upload" style="width: 640px; height: 456px;"></div>
+                                  </div></div>"""
 
 tpl['figureslider_order_item'] = """<div class="image-m li" style="width: 116px; height: 83px;" id="#blId#" data-slide-id="#slideId#">
                                  <div></div>

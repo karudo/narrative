@@ -943,9 +943,11 @@ module.exports=null;(function() {
 
   tpl['figureslider'] = "<div class=\"slider-content\">\n<div class=\"slider__next\"><span></span></div>\n<div class=\"slider__prev\"><span></span></div>\n<div class=\"slider__slides\"></div>\n<div class=\"slider__info\"></div>\n<div class=\"slider__descr\"></div>\n</div>\n\n<div class=\"slider-builder\">\n<div class=\"image-border\"><div class=\"ul\"></div></div>\n</div>";
 
-  tpl['figureslider_mangblock'] = "<div class=\"image-manag\">\n<div><span class=\"image-remove\"></span></div>\n<div><span class=\"image-order\"></span></div>\n<div><span class=\"image-move\"></span></div>\n</div>\n<div class=\"image-manag\">\n<div><span class=\"image-size-m\"></span></div>\n<div><span class=\"image-size-l\"></span></div>\n</div>";
+  tpl['figureslider_mangblock'] = "<div class=\"image-manag\">\n<div><span class=\"image-remove\"></span></div>\n<div><span class=\"image-order\"></span></div>\n<div><span class=\"image-move\"></span></div>\n</div>\n<div class=\"image-manag\">\n<div class=\"set-medium\"><span class=\"image-size-m\"></span></div>\n<div class=\"set-large\"><span class=\"image-size-l\"></span></div>\n</div>";
 
   tpl['figureslider_slidesource'] = "<div class=\"slider__slide\" id=\"#slideId#\">\n<div class=\"image-upload\" style=\"width: 1000px; height: 456px;\"></div>\n</div>";
+
+  tpl['figureslider_slidesource_small'] = "<div class=\"slider__slide\" id=\"#slideId#\"><div class=\"image-container\">\n<div class=\"image-upload\" style=\"width: 640px; height: 456px;\"></div>\n</div></div>";
 
   tpl['figureslider_order_item'] = "<div class=\"image-m li\" style=\"width: 116px; height: 83px;\" id=\"#blId#\" data-slide-id=\"#slideId#\">\n<div></div>\n<span>&nbsp;</span>\n</div>";
 
@@ -1279,10 +1281,12 @@ module.exports=null;(function() {
 
     DragImage.prototype.clickSave = function() {
       var pos;
-      this.savedSliderValue = this.slider.getValue();
-      pos = this.dragdiv.position();
-      this.savedImageTop = pos.top;
-      this.savedImageLeft = pos.left;
+      if (this.hasImage) {
+        this.savedSliderValue = this.slider.getValue();
+        pos = this.dragdiv.position();
+        this.savedImageTop = pos.top;
+        this.savedImageLeft = pos.left;
+      }
       this.setEditMode(false);
       if (!this.useManage) {
         this.removeManagBlock();
@@ -1304,15 +1308,16 @@ module.exports=null;(function() {
           left: this.savedImageLeft,
           top: this.savedImageTop
         });
+        this.setEditMode(false);
         if (!this.useManage) {
           this.removeManagBlock();
         } else {
           this.createManagEditBlock();
         }
       } else {
+        this.setEditMode(false);
         this.makeEmpty();
       }
-      this.setEditMode(false);
       return this.trigger('cancel');
     };
 
@@ -1723,6 +1728,8 @@ module.exports=null;(function() {
 
     __extends(FigureSlider, _super);
 
+    FigureSlider.prototype.bigSlider = true;
+
     FigureSlider.prototype.canAddNewSlide = false;
 
     FigureSlider.prototype.elements = {
@@ -1742,6 +1749,14 @@ module.exports=null;(function() {
         return this.setSliderEdit(true);
       },
       'click .manag-block-figure .image-order': 'orderItems',
+      'click .manag-block-figure .set-medium': function() {
+        this.bigSlider = false;
+        return this.rebuildSlider();
+      },
+      'click .manag-block-figure .set-large': function() {
+        this.bigSlider = true;
+        return this.rebuildSlider();
+      },
       'click .slider-builder .image-save': function() {
         var elem, idx, prevSlideId, slideId, _i, _len, _ref;
         prevSlideId = null;
@@ -1792,11 +1807,15 @@ module.exports=null;(function() {
       }
     };
 
-    FigureSlider.prototype.addSlide = function(image) {
-      var $imageUpload, $slideSource, DragImage, cdi, slideId,
+    FigureSlider.prototype.addSlide = function(image, isImageSrc) {
+      var $imageUpload, $slideSource, DragImage, cdi, slideId, tplName,
         _this = this;
+      if (isImageSrc == null) {
+        isImageSrc = false;
+      }
       slideId = uniqueId('slide');
-      $slideSource = $(template('figureslider_slidesource', {
+      tplName = this.bigSlider ? 'figureslider_slidesource' : 'figureslider_slidesource_small';
+      $slideSource = $(template(tplName, {
         slideId: slideId
       }));
       this.slides.append($slideSource);
@@ -1806,7 +1825,9 @@ module.exports=null;(function() {
         el: $imageUpload,
         useManage: false
       });
-      if (image) {
+      if (isImageSrc && image) {
+        cdi.makeDragImage(image);
+      } else if (image) {
         cdi.readImageFile(image);
       } else {
         cdi.bind('imageUpdated', function(ob) {
@@ -1906,6 +1927,22 @@ module.exports=null;(function() {
       this.builder.show();
       this.builderList.sortable();
       this.$('.slider-builder .image-border').append(this.createManagBlock().html(template('figureslider_order_managblock')));
+      return this.refreshElements();
+    };
+
+    FigureSlider.prototype.rebuildSlider = function() {
+      var imgSources,
+        _this = this;
+      imgSources = this.getDragImagesSrc();
+      this.slides.empty();
+      imgSources.map(function(src) {
+        return _this.addSlide(src, true);
+      });
+      this.addSlide();
+      this.initSlider({
+        startSlideId: 0
+      });
+      this.setSliderEdit(false);
       return this.refreshElements();
     };
 

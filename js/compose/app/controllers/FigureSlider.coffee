@@ -6,6 +6,8 @@ template = require 'templates'
 
 class FigureSlider extends Figure
 
+  bigSlider: yes
+
   canAddNewSlide: no
 
   elements:
@@ -23,6 +25,12 @@ class FigureSlider extends Figure
     'drop .slider__slides': 'drop'
     'click .manag-block-figure .image-move': -> @setSliderEdit yes
     'click .manag-block-figure .image-order': 'orderItems'
+    'click .manag-block-figure .set-medium': ->
+      @bigSlider = no
+      @rebuildSlider()
+    'click .manag-block-figure .set-large': ->
+      @bigSlider = yes
+      @rebuildSlider()
 
     'click .slider-builder .image-save': ->
       prevSlideId = null
@@ -68,9 +76,10 @@ class FigureSlider extends Figure
       @append blockSource
 
 
-  addSlide: (image)->
+  addSlide: (image, isImageSrc = no)->
     slideId = uniqueId 'slide'
-    $slideSource = $(template('figureslider_slidesource', {slideId}))
+    tplName = if @bigSlider then 'figureslider_slidesource' else 'figureslider_slidesource_small'
+    $slideSource = $(template(tplName, {slideId}))
     #sliderSource.css "height", @slides.height()+'px'
 
     @slides.append $slideSource
@@ -81,7 +90,9 @@ class FigureSlider extends Figure
     DragImage = require 'controllers/DragImage'
     cdi = @dragImages[slideId] = new DragImage el: $imageUpload, useManage: no
     #cdi.bind 'editmode', (editmode)=> @canAddNewSlide = !editmode
-    if image
+    if isImageSrc and image
+      cdi.makeDragImage image
+    else if image
       cdi.readImageFile image
     else
       cdi.bind 'imageUpdated', (ob)=> @addSlide() if ob.fisrtUpload
@@ -146,6 +157,21 @@ class FigureSlider extends Figure
     @builderList.sortable()
     @$('.slider-builder .image-border').append @createManagBlock().html template('figureslider_order_managblock')
     @refreshElements()
+
+  rebuildSlider: ->
+    imgSources = @getDragImagesSrc()
+
+    @slides.empty()
+
+    imgSources.map (src)=> @addSlide src, yes
+    @addSlide()
+
+    @initSlider startSlideId: 0
+    @setSliderEdit no
+
+    @refreshElements()
+
+
 
     
 module.exports = FigureSlider

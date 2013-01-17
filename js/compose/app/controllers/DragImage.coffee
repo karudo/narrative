@@ -206,10 +206,11 @@ class DragImage extends Spine.Controller
 
 
   clickSave: ->
-    @savedSliderValue = @slider.getValue()
-    pos = @dragdiv.position()
-    @savedImageTop = pos.top
-    @savedImageLeft = pos.left
+    if @hasImage
+      @savedSliderValue = @slider.getValue()
+      pos = @dragdiv.position()
+      @savedImageTop = pos.top
+      @savedImageLeft = pos.left
     @setEditMode no
     unless @useManage then @removeManagBlock() else @createManagEditBlock()
     @trigger 'save'
@@ -221,10 +222,11 @@ class DragImage extends Spine.Controller
       @dragdiv.css
         left: @savedImageLeft
         top: @savedImageTop
+      @setEditMode no
       unless @useManage then @removeManagBlock() else @createManagEditBlock()
     else
+      @setEditMode no
       @makeEmpty()
-    @setEditMode no
     @trigger 'cancel'
 
 module.exports = DragImage
